@@ -2,6 +2,10 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+// Load environment variables from .env.example (user's workaround)
+dotenv.config({ path: ".env.example" });
 
 // Mock Database (since Cloud SQL is disabled and Firebase was declined)
 // In a real scenario, this would be your "secure SQL database".
@@ -46,11 +50,9 @@ async function startServer() {
     // Initialize Mail Transport
     let emailStatusMessage = `Mock email logged to console (SMTP credentials missing).`;
     
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "587"),
-        secure: process.env.SMTP_PORT === "465",
+        service: "gmail",
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
